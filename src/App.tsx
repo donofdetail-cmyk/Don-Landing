@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
-import { Crown, Sun, Wind, Snowflake, Droplets, Shield, Star, CheckCircle, Phone, ChevronDown } from 'lucide-react';
+import { Crown, Sun, Wind, Snowflake, Droplets, Shield, Star, CheckCircle, Phone, ChevronDown, Award, Instagram } from 'lucide-react';
 
 export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitted(true);
-    setTimeout(() => setIsSubmitted(false), 5000);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      await fetch('https://services.leadconnectorhq.com/hooks/GSXwZXlUEk8ELyr6WHYi/webhook-trigger/57b3863f-5d1c-48ff-a066-a3f31391047b', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      setIsSubmitted(true);
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   return (
@@ -31,21 +47,28 @@ export default function App() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/luxury-car/1920/1080?blur=2')] bg-cover bg-center opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-don-black/60 via-don-black/80 to-don-black" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-[center_25%] opacity-25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-don-black/70 via-don-black/80 to-don-black" />
         
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-don-gold/10 border border-don-gold/20 mb-8 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-don-gold opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-don-gold"></span>
+              </span>
+              <span className="text-don-gold text-xs font-bold tracking-widest uppercase">Located in Reno, Nevada</span>
+            </div>
             <h1 className="text-5xl lg:text-7xl font-serif font-bold tracking-tight leading-[1.1] mb-6 text-don-cream">
-              When’s the last time your car was properly <span className="text-don-gold italic">polished and protected?</span>
+              When’s the last time your car was properly <span className="text-don-gold italic">polished or protected?</span>
             </h1>
             <p className="text-lg lg:text-xl text-don-cream/80 font-light leading-relaxed mb-10">
-              Luxury isn't just driven—it’s preserved. Don of Detail brings the gold standard of vehicle restoration and high-altitude paint protection directly to your Reno driveway.
+              Luxury isn't just driven. It’s preserved. Don of Detail brings the gold standard of mobile auto detailing and high-altitude paint protection directly to your Reno driveway.
             </p>
             <div className="flex items-center gap-6 text-sm font-medium text-don-cream/90 uppercase tracking-widest">
               <div className="flex items-center gap-2">
-                <Crown className="w-5 h-5 text-don-gold" />
-                <span>Elite Mobile Service</span>
+                <Award className="w-5 h-5 text-don-gold" />
+                <span>Award-Winning Service</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-don-gold" />
@@ -64,47 +87,85 @@ export default function App() {
                   <CheckCircle className="w-10 h-10 text-don-gold" />
                 </div>
                 <h3 className="text-3xl font-serif text-don-gold mb-3">Request Received</h3>
-                <p className="text-don-cream/80 font-light text-lg">The Don will be in touch shortly to confirm your elite quote.</p>
+                <p className="text-don-cream/80 font-light text-lg">We will be in touch with you shortly.</p>
               </div>
             ) : (
               <>
-                <h2 className="text-3xl font-serif font-bold mb-2 text-don-gold">Request Your Elite Quote</h2>
+                <h2 className="text-3xl font-serif font-bold mb-2 text-don-gold">Request a Quote</h2>
                 <p className="text-don-cream/60 text-sm mb-8 font-light tracking-wide">Experience the gold standard of detailing.</p>
                 
-                <form className="space-y-5" onSubmit={handleSubmit}>
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Full Name</label>
-                    <input 
-                      type="text" 
-                      required
-                      placeholder="James Bond" 
-                      className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3.5 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
-                    />
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">First Name</label>
+                      <input 
+                        type="text" 
+                        name="firstName"
+                        required
+                        placeholder="James" 
+                        className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Last Name</label>
+                      <input 
+                        type="text" 
+                        name="lastName"
+                        required
+                        placeholder="Bond" 
+                        className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Phone</label>
+                      <input 
+                        type="tel" 
+                        name="phone"
+                        required
+                        placeholder="(775) 555-0199" 
+                        className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        name="email"
+                        required
+                        placeholder="james@example.com" 
+                        className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Vehicle Make/Model</label>
                     <input 
                       type="text" 
+                      name="vehicle"
                       required
-                      placeholder="e.g. 2024 Porsche 911" 
-                      className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3.5 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
+                      placeholder="e.g. 2018 Toyota Tacoma" 
+                      className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream placeholder:text-don-cream/30 focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-widest text-don-cream/50 mb-2">Primary Concern</label>
                     <div className="relative">
-                      <select required defaultValue="" className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3.5 text-don-cream appearance-none focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all">
-                        <option value="" disabled className="text-don-black">Select an issue...</option>
-                        <option value="uv" className="text-don-black">UV Damage & Fading</option>
-                        <option value="salt" className="text-don-black">Road Salt & Grime</option>
-                        <option value="water" className="text-don-black">Hard Water Spots</option>
-                        <option value="restoration" className="text-don-black">Full Restoration</option>
+                      <select required name="service" defaultValue="" className="w-full bg-don-black/50 border border-white/10 rounded-sm px-4 py-3 text-don-cream appearance-none focus:outline-none focus:ring-1 focus:ring-don-gold focus:border-don-gold transition-all">
+                        <option value="" disabled className="text-don-black">Select a service...</option>
+                        <option value="interior" className="text-don-black">Interior Detail</option>
+                        <option value="exterior" className="text-don-black">Exterior Detail</option>
+                        <option value="interior-exterior" className="text-don-black">Interior &amp; Exterior Detail</option>
+                        <option value="paint-correction" className="text-don-black">Paint Correction</option>
+                        <option value="ceramic-coating" className="text-don-black">Ceramic Coating</option>
                       </select>
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-don-gold pointer-events-none" />
                     </div>
                   </div>
-                  <button type="submit" className="w-full bg-don-gold hover:bg-don-gold/90 text-don-black font-bold uppercase tracking-widest py-4 rounded-sm mt-4 transition-all hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] flex items-center justify-center gap-2 group cursor-pointer">
-                    CLAIM MY ELITE QUOTE
+                  <button type="submit" className="w-full bg-don-gold hover:bg-don-gold/90 text-don-black font-bold uppercase tracking-widest py-4 rounded-sm mt-4 transition-all hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] flex items-center justify-center gap-2 group cursor-pointer relative overflow-hidden">
+                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                    <span className="relative z-10 flex items-center gap-2">GET MY QUOTE <ChevronDown className="w-4 h-4 -rotate-90 group-hover:translate-x-1 transition-transform" /></span>
                   </button>
                 </form>
               </>
@@ -122,7 +183,7 @@ export default function App() {
             </h2>
             <div className="w-24 h-1 bg-don-gold mx-auto mb-6"></div>
             <p className="text-don-cream/70 text-lg font-light">
-              Standard car washes strip wax and induce swirl marks. In Northern Nevada, your luxury vehicle faces a unique set of environmental hazards that demand a higher standard of care.
+              Standard car washes strip wax and induce swirl marks. In Northern Nevada, your vehicle faces a unique set of environmental hazards that demand a higher standard of care.
             </p>
           </div>
 
@@ -163,18 +224,63 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="order-2 lg:order-1 relative">
-              <div className="aspect-[4/5] rounded-xl overflow-hidden border border-white/10">
-                <img 
-                  src="https://picsum.photos/seed/luxury-detail/800/1000" 
-                  alt="The Don Standard Detailing" 
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  referrerPolicy="no-referrer"
-                />
+              {/* Instagram Feed Embed Simulation */}
+              <div className="bg-don-black border border-white/10 rounded-xl overflow-hidden shadow-2xl max-w-md mx-auto lg:mx-0">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] p-[2px]">
+                      <div className="w-full h-full rounded-full bg-don-black flex items-center justify-center overflow-hidden">
+                        <Crown className="w-5 h-5 text-don-gold" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-don-cream">donofdetail</p>
+                      <p className="text-xs text-don-cream/60">Reno, Nevada</p>
+                    </div>
+                  </div>
+                  <a 
+                    href="https://instagram.com/donofdetail" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-don-gold text-don-black text-xs font-bold px-4 py-1.5 rounded-sm hover:bg-don-gold/90 transition-colors"
+                  >
+                    Follow
+                  </a>
+                </div>
+
+                {/* Grid */}
+                <div className="grid grid-cols-2 gap-0.5 bg-don-black">
+                  <a href="https://instagram.com/donofdetail" target="_blank" rel="noopener noreferrer" className="aspect-square relative group overflow-hidden block">
+                    <img src="https://picsum.photos/seed/porsche911/400/400" alt="Detailing Work" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </a>
+                  <a href="https://instagram.com/donofdetail" target="_blank" rel="noopener noreferrer" className="aspect-square relative group overflow-hidden block">
+                    <img src="https://picsum.photos/seed/bmwm3/400/400" alt="Detailing Work" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </a>
+                  <a href="https://instagram.com/donofdetail" target="_blank" rel="noopener noreferrer" className="aspect-square relative group overflow-hidden block">
+                    <img src="https://picsum.photos/seed/mercedesamg/400/400" alt="Detailing Work" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  </a>
+                  <a href="https://instagram.com/donofdetail" target="_blank" rel="noopener noreferrer" className="aspect-square relative group overflow-hidden block">
+                    <img src="https://picsum.photos/seed/rangerover/400/400" alt="Detailing Work" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-don-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="text-don-cream font-bold text-xs uppercase tracking-widest border-b border-don-gold pb-1">View Feed</span>
+                    </div>
+                  </a>
+                </div>
+                
+                {/* Footer */}
+                <div className="p-3 bg-white/5 border-t border-white/10 flex justify-between items-center text-xs text-don-cream/60">
+                  <span>Latest Posts</span>
+                  <a href="https://instagram.com/donofdetail" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-don-gold transition-colors">
+                    <Instagram className="w-3 h-3" />
+                    <span>@donofdetail</span>
+                  </a>
+                </div>
               </div>
-              <div className="absolute -bottom-8 -right-8 bg-don-black border border-don-gold/30 p-8 rounded-xl shadow-2xl hidden md:block">
-                <Crown className="w-10 h-10 text-don-gold mb-4" />
-                <p className="text-xl font-serif font-bold text-don-cream">The Gold Standard</p>
-                <p className="text-sm text-don-cream/60 uppercase tracking-widest mt-2">Reno, Nevada</p>
+
+              <div className="absolute -bottom-6 -right-6 bg-don-black border border-don-gold/30 p-6 rounded-xl shadow-2xl hidden md:block z-10">
+                <Crown className="w-8 h-8 text-don-gold mb-2" />
+                <p className="text-lg font-serif font-bold text-don-cream">The Gold Standard</p>
               </div>
             </div>
 
@@ -207,11 +313,11 @@ export default function App() {
                 </div>
                 <div className="flex gap-6">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-don-gold/10 border border-don-gold/30 flex items-center justify-center">
-                    <Wind className="w-5 h-5 text-don-gold" />
+                    <CheckCircle className="w-5 h-5 text-don-gold" />
                   </div>
                   <div>
-                    <h4 className="text-2xl font-serif font-bold mb-2 text-don-cream">Medical-Grade Steam</h4>
-                    <p className="text-don-cream/70 font-light leading-relaxed">We utilize industrial steam extraction to pull fine-powder dust and allergens from deep within carpets and leather pores, sanitizing your interior without harsh chemicals.</p>
+                    <h4 className="text-2xl font-serif font-bold mb-2 text-don-cream">24-Hour Rain Guarantee</h4>
+                    <p className="text-don-cream/70 font-light leading-relaxed">We stand behind our work. If rain or weather ruins your shine within 24 hours of service, we'll return to restore the exterior finish at no extra cost.</p>
                   </div>
                 </div>
               </div>
@@ -278,7 +384,7 @@ export default function App() {
             Protect your resale value today.
           </p>
           <a href="#quote" className="inline-flex items-center justify-center gap-3 bg-don-black text-don-gold hover:bg-[#1a1a1a] font-bold uppercase tracking-widest px-10 py-5 rounded-sm transition-all hover:scale-105 active:scale-95 shadow-2xl w-full sm:w-auto">
-            CLAIM MY ELITE QUOTE
+            GET MY QUOTE
           </a>
         </div>
       </section>
